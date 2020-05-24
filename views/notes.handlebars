@@ -1,0 +1,17 @@
+<a style="float: right;" href="/logout">Logout</a>
+
+<div>
+    <h1 style="padding-top: 3%;">{{name}}'s notes</h1>
+    <ul>
+        {{#each notes}}
+            <li class="list-group-item">
+                {{this.note}}
+                <a style="float: right;" href="/deleteNote/{{this.id}}">Delete</a>
+                <a style="float: right; margin-right:10px;" href="/editNote/{{this.id}}">Edit</a>
+            </li>
+        {{/each}}
+    </ul>
+</div>
+
+<a href="/createNote">Create note</a>
+

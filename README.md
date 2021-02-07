@@ -10,6 +10,7 @@ chmod +x build.sh && ./build.sh
 And the service should be running on `localhost:3000`
 
 ## Todos
-- [x] Code the api
+- [x] Build a (bad) api
 - [ ] Migrate database to SQL
 - [ ] Create an authentication system
+- [ ] Build a better api

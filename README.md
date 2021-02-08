@@ -15,3 +15,4 @@ And the service should be running on `localhost:3000`
 - [x] Create a authentication system
 - [ ] Build a better api
 - [ ] Create a better authentication system
+- [ ] Prettify the front end

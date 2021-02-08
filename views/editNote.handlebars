@@ -1,6 +1,6 @@
 <h1>Edit note</h1>
-<form action="/api/notes/edit/{{note.id}}" method="POST">
+<form action="/editNote/{{note.uid}}" method="POST">
     <div>
-        <input style="width: 90%;" type="text" id="note" name="note" value="{{note.note}}"><br><br>
-    </div>
+				<input style="width: 90%;" type="text" id="note" name="note" value="{{note.note}}"><br><br>
+		</div>
 </form>

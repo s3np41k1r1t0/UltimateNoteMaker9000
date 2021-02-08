@@ -1,8 +1,9 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const exphbs = require('express-handlebars');
-var fetch = require('node-fetch');
-const logger = require('./useful_func/logger');
+const logger = require('./modules/logger');
+const users = require('./modules/users');
+const notes = require('./modules/notes'); 
 
 const app = express();
 
@@ -17,68 +18,78 @@ app.use(logger);
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser(SECRET));
-app.use('/api/notes', require('./routes/api/notes'));
 
-//home page -> checks if username is set
-app.get('/', (req,res) => {
-    if(req.signedCookies.name)
-        res.redirect('/notes');
-    
-    else 
-        res.render('index');
+//auth middleware
+async function auth(req,res,next) {
+		if(!req.signedCookies.name) res.redirect("/login");
+		else next();
+};
+
+//home page
+app.get('/', auth, (req,res) => {
+    res.redirect('/notes');
 });
 
 //sets username
-app.post('/signCookie', (req,res) => {
-    res.cookie('name',req.body.name, {signed: true});
-    res.redirect("/notes");
+app.get('/login', (req,res) => {
+    res.render("login");
 });
 
+app.post('/login', async (req,res) => {
+		let user = users.verify(req.body.username,req.body.password);
+		if(user.err) res.render("login",{err:user.err})
+		else {res.cookie('name',req.body.username,{signed:true}); res.redirect("/");}
+})
+
+app.get('/register', (req,res) => {
+		res.render("register"); //TODO need to build this template
+})
+
+app.post('/register', async (req,res) => {
+		let user = users.create(req.body.username,req.body.password);
+		if(user.err) res.render("register",{err:user.err});
+		else res.redirect("/login");
+})
+
 //clears username
-app.get('/logout', (req,res) => {
+app.get('/logout', auth, (req,res) => {
     res.clearCookie('name');
     res.redirect("/");
 });
 
 //lists all notes of the user
-app.get('/notes', async (req,res) => {
-    if(req.signedCookies.name){
-        let data = await fetch(`http://localhost:3000/api/notes/name/${req.signedCookies.name}`).then(res => res.json());
-        
-        if(!data.err)
-            res.render('notes', {name:req.signedCookies.name, notes:data});
-    
-        else
-            res.render('notes', {name:req.signedCookies.name});
-    }    
-
-    else
-        res.redirect('/');
+app.get('/notes', auth, async (req,res) => {
+		let data = notes.getByUser(req.signedCookies.name);
+		if(!data.err) res.render('notes', {name:req.signedCookies.name, notes:data});
+		else res.render('notes', {name:req.signedCookies.name});
 });
 
 //creates a note
-app.get('/createNote', (req,res) => {
-    if(req.signedCookies.name) 
-        res.render('createNote', {name: req.signedCookies.name});
-
-    else
-        res.redirect('/');
+app.get('/createNote', auth, async (req,res) => {
+    res.render('createNote', {name: req.signedCookies.name});
 });
 
-//handler for create note button
-app.get('/editNote/:id', async (req,res) => {
-    if(req.signedCookies.name){
-        let data = await fetch(`http://localhost:3000/api/notes/id/${req.params.id}`).then(res => res.json());
-        res.render('editNote', {note:data});  
-    }
+app.post('/createNote', auth, async (req,res) => {
+		let note = notes.create(req.signedCookies.name,req.body.note); 
+		if(note.err) res.render('createNote',{err: note.err});
+		res.redirect('/notes');
+})
+
+//handler for edit note button
+app.get('/editNote/:id', auth, async (req,res) => {
+		let note = notes.get(req.params.id);
+		res.render('editNote', {note:note});  
+});
+
+app.post('/editNote/:id', auth, async (req,res) => {
+		notes.edit(req.signedCookies.name,req.body.note,req.params.id);
+		res.redirect('/notes');
 });
 
 //handler for delete button
-app.get('/deleteNote/:id', async (req,res) => {
-    if(req.signedCookies.name)
-        await fetch(`http://localhost:3000/api/notes/id/${req.params.id}`,{method:"DELETE"});
-
-    res.redirect('/');
+app.get('/deleteNote/:id', auth, async (req,res) => {
+		notes.delete(req.params.id);
+    res.redirect('/notes');
 });
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

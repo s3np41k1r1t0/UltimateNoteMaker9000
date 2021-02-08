@@ -6,8 +6,8 @@
         {{#each notes}}
             <li class="list-group-item">
                 {{this.note}}
-                <a style="float: right;" href="/deleteNote/{{this.id}}">Delete</a>
-                <a style="float: right; margin-right:10px;" href="/editNote/{{this.id}}">Edit</a>
+                <a style="float: right;" href="/deleteNote/{{this.uid}}">Delete</a>
+                <a style="float: right; margin-right:10px;" href="/editNote/{{this.uid}}">Edit</a>
             </li>
         {{/each}}
     </ul>

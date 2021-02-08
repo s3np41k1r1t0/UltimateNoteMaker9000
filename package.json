@@ -1,23 +1,31 @@
 {
   "name": "ultimatenotemaker9000",
-  "version": "0.0.1",
-  "description": "The ultimate note maker",
+  "version": "1.0.0",
+  "description": "A very simple note manager written in Node and Express: for noobs by a noob",
   "main": "index.js",
-  "scripts": {
-    "start": "node index",
-    "dev": "nodemon index"
-  },
-  "author": "Bruno Mendes",
-  "license": "ISC",
   "dependencies": {
+    "bcrypt": "*",
+    "better-sqlite3": "*",
     "cookie-parser": "^1.4.5",
     "express": "^4.17.1",
     "express-handlebars": "^4.0.3",
     "moment": "^2.24.0",
-    "node-fetch": "^2.6.1",
-    "uuid": "^7.0.3"
+    "nodemon": "^2.0.2",
+    "uuidv4": "*"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.2"
-  }
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index",
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/s3np41k1r1t0/UltimateNoteMaker9000.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/s3np41k1r1t0/UltimateNoteMaker9000/issues"
+  },
+  "homepage": "https://github.com/s3np41k1r1t0/UltimateNoteMaker9000#readme"
 }

@@ -11,6 +11,7 @@ And the service should be running on `localhost:3000`
 
 ## Todos
 - [x] Build a (bad) api
-- [ ] Migrate database to SQL
-- [ ] Create an authentication system
+- [x] Migrate database to SQL
+- [x] Create a authentication system
 - [ ] Build a better api
+- [ ] Create a better authentication system
